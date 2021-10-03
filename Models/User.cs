@@ -1,4 +1,5 @@
 using System.ComponentModel.DataAnnotations;
+using System;
 namespace FormSubmission.Models
 {
     public class User
@@ -22,5 +23,34 @@ namespace FormSubmission.Models
         [Required (ErrorMessage ="Password Needed!")]
         [MinLength(4,ErrorMessage ="Needs between 4 and 50 characters!")]
         public string Password{get;set;}
+
+        [Required]
+        [FutureDateAttribute]
+        public DateTime FavDate {get;set;}
+    }
+
+
+
+    public class FutureDateAttribute : ValidationAttribute
+    {
+        protected override ValidationResult IsValid(object value, ValidationContext validationContext)
+        {
+            if(value is DateTime)
+            {
+                DateTime checkMe = (DateTime)value;
+                if(checkMe > DateTime.Now)
+                {
+                    return new ValidationResult("That's the Future");                        
+                }
+                else 
+                {
+                    return ValidationResult.Success;
+                }
+            }
+            else
+            {
+                return new ValidationResult("Not a date");
+            }
+        }
     }
 }
